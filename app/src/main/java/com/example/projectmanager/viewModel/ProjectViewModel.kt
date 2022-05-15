@@ -32,6 +32,24 @@ class ProjectViewModel : ViewModel(), DefaultLifecycleObserver {
         }
         list
     }
+    
+    fun getProjects(userName: String, direction: Direction = Direction.DESCENDING) = Transformations.map(repository.onProjectsChange(userName, direction.name)) { projects ->
+        val list = ArrayList<HashMap<String, Any>>()
+        for (project in projects) {
+            list.add(
+                hashMapOf(
+                    "name" to project.name,
+                    "manager" to project.manager,
+                    "members" to project.members,
+                    "description" to project.description,
+                    "startTime" to project.startTime,
+                    "deadline" to project.deadline,
+                    "status" to (if (project.taskCount == project.completeCount) "complete" else "on going")
+                )
+            )
+        }
+        list
+    }
 
     enum class Direction {
         ASCENDING,
